@@ -10,6 +10,9 @@ async def estimate_relationships(page: int = 1):
     """
     Estimate relationships between characters according to their appearances in the whole series.
     """
+    if not page or page < 1 or page > 10:
+        return {"error": "Invalid page number. Please select a page between 1 and 10."}
+
     n_clusters = 10
     character_relationships_groups = analysis.estimate_relationships(n_clusters)
     character_relationships_groups = sorted(character_relationships_groups.items(), key=lambda x: len(x[1]))
