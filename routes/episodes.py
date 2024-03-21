@@ -11,7 +11,7 @@ async def filter_episodes(name: str = None,
                           character_ids: str = None,
                           page: int = 1):
     """
-    Filter episodes by criteria
+    Filter episodes by various parameters
     """
     episodes = cache.get_all_episodes()
 

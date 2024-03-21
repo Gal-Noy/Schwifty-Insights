@@ -12,7 +12,7 @@ async def filter_locations(name: str = None,
                            at_least_residents: int = None,
                            page: int = 1):
     """
-    Filter locations by criteria
+    Filter locations by various parameters
     """
     locations = cache.get_all_locations()
 

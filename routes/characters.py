@@ -15,7 +15,7 @@ async def filter_characters(name: str = None,
                             location: str = None,
                             page: int = 1):
     """
-    Filter characters by criteria
+    Filter characters by various parameters
     """
     characters = cache.get_all_characters()
 
@@ -80,7 +80,7 @@ async def species_sorted(page: int = 1,
 @router.get("/most-common-species")
 async def most_common_species():
     """
-    Most common species
+    Most common species among characters
     """
     characters = cache.get_all_characters()
     species = {}
