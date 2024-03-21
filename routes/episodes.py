@@ -22,7 +22,7 @@ async def filter_episodes(name: str = None,
     if character_ids:
         character_ids = character_ids.split(",")
         episodes = [episode for episode in episodes if
-                    all([character_id in map(lambda x: x.split("/")[-1], episode["characters"])
+                    all([character_id in [character.split("/")[-1] for character in episode["characters"]]
                          for character_id in character_ids])]
     return paginate(episodes, page)
 
