@@ -22,7 +22,8 @@ async def filter_episodes(name: str = None,
     if character_ids:
         character_ids = character_ids.split(",")
         episodes = [episode for episode in episodes if
-                    all([character_id in episode["characters"] for character_id in character_ids])]
+                    all([character_id in map(lambda x: x.split("/")[-1], episode["characters"])
+                         for character_id in character_ids])]
     return paginate(episodes, page)
 
 
@@ -36,19 +37,6 @@ async def character_count_sorted(page: int = 1,
     episodes = sorted(episodes, key=lambda x: len(x["characters"]), reverse=True)
     if not verbose:
         episodes = [{"name": episode["name"], "character_count": len(episode["characters"])} for episode in episodes]
-    return paginate(episodes, page)
-
-
-@router.get("/duration-sorted")
-async def duration_sorted(page: int = 1,
-                          verbose: bool = False):
-    """
-    All episodes sorted by duration
-    """
-    episodes = cache.get_all_episodes()
-    episodes = sorted(episodes, key=lambda x: x["duration"], reverse=True)
-    if not verbose:
-        episodes = [{"name": episode["name"], "duration": episode["duration"]} for episode in episodes]
     return paginate(episodes, page)
 
 

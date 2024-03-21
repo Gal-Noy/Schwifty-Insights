@@ -32,7 +32,8 @@ async def filter_characters(name: str = None,
     if origin:
         characters = [character for character in characters if character["origin"]["name"].lower().find(origin) != -1]
     if location:
-        characters = [character for character in characters if character["location"]["name"].lower().find(location) != -1]
+        characters = [character for character in characters if
+                      character["location"]["name"].lower().find(location) != -1]
 
     return paginate(characters, page)
 
@@ -65,7 +66,7 @@ async def status_sorted(page: int = 1,
 
 @router.get("/species-sorted")
 async def species_sorted(page: int = 1,
-                        verbose: bool = False):
+                         verbose: bool = False):
     """
     All characters sorted by species
     """
