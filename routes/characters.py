@@ -1,17 +1,5 @@
 from fastapi import APIRouter
-from data.client import fetch_characters
 from data.cache import cache
-
-
-def get_characters():
-    cached_characters = cache.get("characters")
-    if cached_characters:
-        return cached_characters
-    else:
-        characters = fetch_characters()
-        cache["characters"] = characters
-        return characters
-
 
 router = APIRouter()
 
