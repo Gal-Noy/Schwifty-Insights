@@ -64,7 +64,7 @@ async def status_sorted(page: int = 1,
 
 
 @router.get("/species-sorted")
-async def status_sorted(page: int = 1,
+async def species_sorted(page: int = 1,
                         verbose: bool = False):
     """
     All characters sorted by species

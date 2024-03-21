@@ -1,5 +1,5 @@
 def paginate(elements, page):
-    if page < 1 or page > 20:
+    if page < 1:
         return {"error": "Invalid page number"}
     if len(elements) <= 20:
         return elements
