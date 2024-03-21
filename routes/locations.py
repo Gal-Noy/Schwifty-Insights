@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from data.cache import cache
+from utils import paginate
+import data.cache as cache
 
 router = APIRouter()
 
