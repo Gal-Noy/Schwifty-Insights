@@ -1,5 +1,5 @@
 from cachetools import TTLCache
-from client import fetch_characters, fetch_episodes, fetch_locations
+import data.client as client
 
 CACHE_SIZE = 1000
 CACHE_TTL = 60 * 60 * 24
@@ -7,31 +7,32 @@ CACHE_TTL = 60 * 60 * 24
 cache = TTLCache(maxsize=CACHE_SIZE, ttl=CACHE_TTL)
 
 
-def get_characters():
-    cached_characters = cache.get("characters")
-    if cached_characters:
-        return cached_characters
+def get_all_characters():
+    if "characters" in cache:
+        return cache["characters"]
     else:
-        characters = fetch_characters()
+        characters = client.fetch_all_characters()
         cache["characters"] = characters
         return characters
 
 
-def get_episodes():
-    cached_episodes = cache.get("episodes")
-    if cached_episodes:
-        return cached_episodes
+def get_all_locations():
+    if "locations" in cache:
+        return cache["locations"]
     else:
-        episodes = fetch_episodes()
+        locations = client.fetch_all_locations()
+        cache["locations"] = locations
+        return locations
+
+
+def get_all_episodes():
+    if "episodes" in cache:
+        return cache["episodes"]
+    else:
+        episodes = client.fetch_all_episodes()
         cache["episodes"] = episodes
         return episodes
 
 
-def get_locations():
-    cached_locations = cache.get("locations")
-    if cached_locations:
-        return cached_locations
-    else:
-        locations = fetch_locations()
-        cache["locations"] = locations
-        return locations
+def clear_cache():
+    cache.clear()
