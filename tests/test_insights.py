@@ -8,6 +8,9 @@ client = TestClient(app)
 BEARER_TOKEN = os.getenv('TEST_USER_BEARER_TOKEN')
 
 
+# Notice that the tests are not testing the actual logic of the endpoints, but rather if the endpoints are working
+# correctly. This is because the logic of the endpoints is already tested in the test_data_analysis.py file.
+
 def test_characters_relationships():
     response = client.get("/insights/characters-relationships", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
     assert response.status_code == 200
