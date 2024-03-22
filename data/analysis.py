@@ -145,12 +145,15 @@ def species_survival():
             status_counts[status] = 0
         status_counts[status] += 1
 
+    # Create a matrix where each row is a species and each column is a status
+    # The value is the number of characters with that status in that species
     matrix = np.zeros((len(species_counts), len(status_counts)))
     for i, (species, species_count) in enumerate(species_counts.items()):
         for j, (status, status_count) in enumerate(status_counts.items()):
             matrix[i, j] = len([character for character in characters
                                 if character["species"] == species and character["status"] == status])
 
+    # Calculate the survival rate for each species
     species_survival_rates = {}
     for i, species in enumerate(species_counts.keys()):
         survival_rate = matrix[i, 0] / np.sum(matrix[i])

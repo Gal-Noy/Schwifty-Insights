@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 import config
 from starlette.middleware.cors import CORSMiddleware
+from data import cache
 from routes import characters, episodes, locations, insights, auth
 
 app = FastAPI()
@@ -21,4 +22,5 @@ app.include_router(episodes.router, prefix="/episodes", tags=["episodes"])
 app.include_router(locations.router, prefix="/locations", tags=["locations"])
 
 if __name__ == "__main__":
+    cache.cache_data()
     uvicorn.run(app, host="127.0.0.1", port=8000)

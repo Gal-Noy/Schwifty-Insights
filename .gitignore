@@ -6,6 +6,7 @@ venv/
 
 # Ignore IDE and editor-specific files
 .idea/
+__pycache__/
 .vscode/
 
 # Ignore system-specific files

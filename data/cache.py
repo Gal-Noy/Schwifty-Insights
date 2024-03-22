@@ -1,5 +1,7 @@
 import os
 from cachetools import TTLCache
+from tqdm import tqdm
+
 import data.client as client
 
 CACHE_SIZE = float(os.getenv("CACHE_SIZE"))
@@ -45,3 +47,20 @@ def get_all_episodes():
         episodes = client.fetch_all_episodes()
         cache["episodes"] = episodes
         return episodes
+
+
+def cache_data():
+    """
+    Cache all data
+    """
+    cache_functions = [
+        ("Characters", get_all_characters),
+        ("Locations", get_all_locations),
+        ("Episodes", get_all_episodes)
+    ]
+
+    with tqdm(total=len(cache_functions), desc="Caching data") as pbar:
+        for name, func in cache_functions:
+            func()
+            pbar.update(1)
+            pbar.set_description(f"Caching {name}")
