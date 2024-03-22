@@ -5,8 +5,8 @@ import utils
 router = APIRouter()
 
 
-@router.get("/estimate-relationships")
-async def estimate_relationships(page: int = 1):
+@router.get("/characters-relationships")
+async def characters_relationships(page: int = 1):
     """
     Estimate relationships between characters according to their appearances in the whole series.
     :param page:
@@ -40,43 +40,6 @@ async def estimate_relationships(page: int = 1):
     return utils.paginate_list_of_tuples(relationships_labeled, page)
 
 
-@router.get("/species-survival")
-async def species_survival():
-    """
-    Analyze the correlation between a character's species and their status.
-    Are there species that are more likely to survive?
-    :return: List of species and their survival rates
-    """
-    species_survival_rates = analysis.species_survival()
-    sorted_by_survival_rate = sorted(species_survival_rates.items(), key=lambda x: x[1], reverse=True)
-    return [{"species": species, "survival_rate": f"{round(survival_rate * 100, 2)}%"}
-            for species, survival_rate in sorted_by_survival_rate]
-
-
-@router.get("/native-species")
-async def native_species(page: int = 1):
-    """
-    Estimate the native species of each location.
-    :param page:
-    :return:  List of locations and their native species
-    """
-    return utils.paginate_list(analysis.native_species(), page)
-
-
-@router.get("/dangerous-locations")
-async def dangerous_locations(page: int = 1):
-    """
-    Analyze the correlation between a character's location and their status.
-    Are there locations with higher mortality rates?
-    :param page:
-    :return: List of locations and their mortality rates
-    """
-    danger_threshold = 0.75  # 75% of characters in a location are dead or unknown
-    result = analysis.dangerous_locations(danger_threshold)
-    sorted_by_danger = sorted(result, key=lambda x: x[1], reverse=True)
-    return utils.paginate_list([(label, f"Mortality Rate: {_ * 100}%") for label, _ in sorted_by_danger], page)
-
-
 @router.get("/dimension-species-diversity")
 async def dimension_species_diversity(page: int = 1):
     """
@@ -104,17 +67,64 @@ async def dimension_species_diversity(page: int = 1):
     return utils.paginate_list_of_tuples(diversity_labeled, page)
 
 
-@router.get("/status-appearances-correlation")
-async def status_appearances_correlation():
+@router.get("/dangerous-locations")
+async def dangerous_locations(page: int = 1):
     """
-    Estimate correlation between character status and number of episodes they appear in.
+    Analyze the correlation between a character's location and their status.
+    Are there locations with higher mortality rates?
+    :param page:
+    :return: List of locations and their mortality rates
     """
-    return {"message": "Status correlation between character status and number of episodes they appear in"}
+    danger_threshold = 0.75  # 75% of characters in a location are dead or unknown
+    result = analysis.dangerous_locations(danger_threshold)
+    sorted_by_danger = sorted(result, key=lambda x: x[1], reverse=True)
+    return utils.paginate_list([(label, f"Mortality Rate: {_ * 100}%") for label, _ in sorted_by_danger], page)
 
 
-@router.get("/frequent-location-changes")
-async def frequent_location_changes():
+@router.get("/species-survival")
+async def species_survival():
+    """
+    Analyze the correlation between a character's species and their status.
+    Are there species that are more likely to survive?
+    :return: List of species and their survival rates
+    """
+    species_survival_rates = analysis.species_survival()
+    sorted_by_survival_rate = sorted(species_survival_rates.items(), key=lambda x: x[1], reverse=True)
+    return [{"species": species, "survival_rate": f"{round(survival_rate * 100, 2)}%"}
+            for species, survival_rate in sorted_by_survival_rate]
+
+
+@router.get("/native-species")
+async def native_species(page: int = 1):
+    """
+    Estimate the native species of each location.
+    :param page:
+    :return: List of locations and their native species
+    """
+    return utils.paginate_list(analysis.native_species(), page)
+
+
+@router.get("/gender-by-location-type")
+async def gender_by_location_type(page: int = 1):
+    """
+    Analyze the correlation between a character's gender and their location type.
+    :param page:
+    :return: List of locations types and their most common gender
+    """
+    result = analysis.gender_by_location_type()
+
+    re_ordered = {}
+    for k, v in result:
+        re_ordered.setdefault(v, []).append(k)
+
+    result = [(v, keys) for v, keys in re_ordered.items()]
+    return utils.paginate_list(result, page)
+
+
+@router.get("/frequent-travelers")
+async def frequent_travelers(page: int = 1):
     """
     Report characters which change locations frequently.
+    :return:  List of characters who change locations frequently
     """
-    return {"message": "Characters which change locations frequently"}
+    return utils.paginate_list(analysis.frequent_travelers(), page)

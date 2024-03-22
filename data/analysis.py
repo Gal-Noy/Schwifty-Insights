@@ -3,9 +3,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 
 
-# Unsupervised - we don't have labels for relationships between characters
-# We can use clustering algorithms to group characters based on their appearances in same episodes
-def estimate_relationships(n_clusters: int = 10):
+def characters_relationships(n_clusters: int = 10):
     """
     Estimate relationships between characters according to their appearances in the whole series.
     :param n_clusters:  Number of clusters to group characters
@@ -38,102 +36,6 @@ def estimate_relationships(n_clusters: int = 10):
         character_relationships_groups[cluster_id].append(character_id)
 
     return character_relationships_groups
-
-
-def species_survival():
-    """
-    Analyze the correlation between a character's species and their status.
-    :return: List of species and their survival rates
-    """
-    species_counts, status_counts = {}, {}
-    characters = cache.get_all_characters()
-
-    for character in characters:
-        species = character["species"]
-        status = character["status"]
-
-        if species not in species_counts:
-            species_counts[species] = 0
-        species_counts[species] += 1
-
-        if status not in status_counts:
-            status_counts[status] = 0
-        status_counts[status] += 1
-
-    matrix = np.zeros((len(species_counts), len(status_counts)))
-    for i, (species, species_count) in enumerate(species_counts.items()):
-        for j, (status, status_count) in enumerate(status_counts.items()):
-            matrix[i, j] = len([character for character in characters
-                                if character["species"] == species and character["status"] == status])
-
-    species_survival_rates = {}
-    for i, species in enumerate(species_counts.keys()):
-        survival_rate = matrix[i, 0] / np.sum(matrix[i])
-        species_survival_rates[species] = survival_rate
-
-    return {f"{species} ({species_counts[species]})": survival_rate
-            for species, survival_rate in species_survival_rates.items()}
-
-
-def native_species():
-    """
-    Estimate the native species of each location.
-    :return: List of locations and their native species
-    """
-    characters = cache.get_all_characters()
-    locations = cache.get_all_locations()
-    species = list(set([character["species"] for character in characters]))
-
-    # Create a matrix where each row is a location and each column is a species
-    # The value is the number of characters of that species in that location
-    matrix = np.zeros((len(locations), len(species)))
-    for character in characters:
-        c_origin = character["origin"]["url"].split("/")[-1]
-        if c_origin != "":
-            location_idx = [location["id"] for location in locations].index(int(c_origin))
-            species_idx = species.index(character["species"])
-            matrix[location_idx, species_idx] += 1
-
-    # Find the most common species in each location
-    native_species_list = []
-    for i, location in enumerate(locations):
-        native_species_idx = np.argmax(matrix[i])
-        native_species_list.append((location["name"], species[native_species_idx]))
-
-    return native_species_list
-
-
-def dangerous_locations(danger_threshold: float = 0.75):
-    """
-    Analyze the correlation between a character's location and their status.
-    Are there locations with higher mortality rates?
-    :param danger_threshold:  Threshold for dangerous locations
-    :return:  List of dangerous locations and their danger rates
-    """
-    characters = cache.get_all_characters()
-    locations = cache.get_all_locations()
-    statuses = list(set([character["status"] for character in characters]))
-
-    # Create a matrix where each row is a location and each column is a status
-    # The value is the number of characters with that status in that location
-    matrix = np.zeros((len(locations), len(statuses)))
-    for character in characters:
-        c_location = character["location"]["url"].split("/")[-1]
-        if c_location != "":
-            location_idx = [location["id"] for location in locations].index(int(c_location))
-            status_idx = statuses.index(character["status"])
-            matrix[location_idx, status_idx] += 1
-
-    # Find the most dangerous locations
-    dangerous_locations_list = []
-    dead_idx, unknown_idx = statuses.index("Dead"), statuses.index("unknown")
-    for i, location in enumerate(locations):
-        row_sum = np.sum(matrix[i])
-        danger_rate = (matrix[i, dead_idx] + matrix[i, unknown_idx]) / row_sum if row_sum > 0 else 0
-        if danger_rate >= danger_threshold:
-            dangerous_locations_list.append((location["name"], danger_rate))
-
-    return dangerous_locations_list
 
 
 def dimension_species_diversity(n_clusters: int = 5):
@@ -188,3 +90,141 @@ def dimension_species_diversity(n_clusters: int = 5):
 
     return sorted(dimension_species_diversity_groups.items(),
                   key=lambda x: clusters_avg_species_count[x[0]])
+
+
+def dangerous_locations(danger_threshold: float = 0.75):
+    """
+    Analyze the correlation between a character's location and their status.
+    Are there locations with higher mortality rates?
+    :param danger_threshold:  Threshold for dangerous locations
+    :return:  List of dangerous locations and their danger rates
+    """
+    characters = cache.get_all_characters()
+    locations = cache.get_all_locations()
+    statuses = list(set([character["status"] for character in characters]))
+
+    # Create a matrix where each row is a location and each column is a status
+    # The value is the number of characters with that status in that location
+    matrix = np.zeros((len(locations), len(statuses)))
+    for character in characters:
+        c_location = character["location"]["url"].split("/")[-1]
+        if c_location != "":
+            location_idx = [location["id"] for location in locations].index(int(c_location))
+            status_idx = statuses.index(character["status"])
+            matrix[location_idx, status_idx] += 1
+
+    # Find the most dangerous locations
+    dangerous_locations_list = []
+    dead_idx, unknown_idx = statuses.index("Dead"), statuses.index("unknown")
+    for i, location in enumerate(locations):
+        row_sum = np.sum(matrix[i])
+        danger_rate = (matrix[i, dead_idx] + matrix[i, unknown_idx]) / row_sum if row_sum > 0 else 0
+        if danger_rate >= danger_threshold:
+            dangerous_locations_list.append((location["name"], danger_rate))
+
+    return dangerous_locations_list
+
+
+def species_survival():
+    """
+    Analyze the correlation between a character's species and their status.
+    :return: List of species and their survival rates
+    """
+    species_counts, status_counts = {}, {}
+    characters = cache.get_all_characters()
+
+    for character in characters:
+        species = character["species"]
+        status = character["status"]
+
+        if species not in species_counts:
+            species_counts[species] = 0
+        species_counts[species] += 1
+
+        if status not in status_counts:
+            status_counts[status] = 0
+        status_counts[status] += 1
+
+    matrix = np.zeros((len(species_counts), len(status_counts)))
+    for i, (species, species_count) in enumerate(species_counts.items()):
+        for j, (status, status_count) in enumerate(status_counts.items()):
+            matrix[i, j] = len([character for character in characters
+                                if character["species"] == species and character["status"] == status])
+
+    species_survival_rates = {}
+    for i, species in enumerate(species_counts.keys()):
+        survival_rate = matrix[i, 0] / np.sum(matrix[i])
+        species_survival_rates[species] = survival_rate
+
+    return {f"{species} ({species_counts[species]})": survival_rate
+            for species, survival_rate in species_survival_rates.items()}
+
+
+def gender_by_location_type():
+    """
+    Analyze the correlation between a character's gender and their location type.
+    :return: List of locations types and their most common gender
+    """
+    characters = cache.get_all_characters()
+    locations = cache.get_all_locations()
+    genders = list(set([character["gender"] for character in characters]))
+    location_types = list(set([location["type"] for location in locations]))
+    location_types = [location_type for location_type in location_types if location_type != ""]
+
+    # Create a matrix where each row is a location type and each column is a gender
+    # The value is the number of characters of that gender in this location type
+    matrix = np.zeros((len(location_types), len(genders)))
+    for character in characters:
+        c_location = character["location"]["url"].split("/")[-1]
+        if c_location != "":
+            location_idx = [location["id"] for location in locations].index(int(c_location))
+            gender_idx = genders.index(character["gender"])
+            location_type = locations[location_idx]["type"]
+            if location_type != "":
+                location_type_idx = location_types.index(location_type)
+                matrix[location_type_idx, gender_idx] += 1
+
+    # Find the most common gender in each location type
+    gender_by_location_type_list = []
+    for i, location_type in enumerate(location_types):
+        most_common_gender_idx = np.argmax(matrix[i])
+        gender_by_location_type_list.append((location_type, genders[most_common_gender_idx]))
+
+    return gender_by_location_type_list
+
+
+def native_species():
+    """
+    Estimate the native species of each location.
+    :return: List of locations and their native species
+    """
+    characters = cache.get_all_characters()
+    locations = cache.get_all_locations()
+    species = list(set([character["species"] for character in characters]))
+
+    # Create a matrix where each row is a location and each column is a species
+    # The value is the number of characters of that species in that location
+    matrix = np.zeros((len(locations), len(species)))
+    for character in characters:
+        c_origin = character["origin"]["url"].split("/")[-1]
+        if c_origin != "":
+            location_idx = [location["id"] for location in locations].index(int(c_origin))
+            species_idx = species.index(character["species"])
+            matrix[location_idx, species_idx] += 1
+
+    # Find the most common species in each location
+    native_species_list = []
+    for i, location in enumerate(locations):
+        native_species_idx = np.argmax(matrix[i])
+        native_species_list.append((location["name"], species[native_species_idx]))
+
+    return native_species_list
+
+
+def frequent_travelers():
+    """
+    Report characters which change locations frequently.
+    :return:  List of characters who change locations frequently
+    """
+    return [character["name"] for character in cache.get_all_characters()
+            if character["location"]["name"] != character["origin"]["name"]]
