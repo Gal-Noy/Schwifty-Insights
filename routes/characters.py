@@ -1,21 +1,27 @@
-from fastapi import APIRouter
-from utils import paginate_list
+from typing import Annotated
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordBearer
+from utils.pagination import paginate_list
 import data.cache as cache
 
 router = APIRouter()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 @router.get("/filter")
-async def filter_characters(name: str = None,
+async def filter_characters(token: Annotated[str, Depends(oauth2_scheme)],
+                            page: int = 1,
+                            name: str = None,
                             status: str = None,
                             species: str = None,
                             type: str = None,
                             gender: str = None,
                             origin: str = None,
-                            location: str = None,
-                            page: int = 1):
+                            location: str = None):
     """
     Filter characters based on various attributes
+    :param token:
+    :param page:
     :param name:
     :param status:
     :param species:
@@ -23,7 +29,6 @@ async def filter_characters(name: str = None,
     :param gender:
     :param origin:
     :param location:
-    :param page:
     :return: List of characters
     """
     characters = cache.get_all_characters()

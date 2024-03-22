@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 import data.analysis as analysis
-import utils
+from utils import pagination
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ async def characters_relationships(page: int = 1):
     }
 
     # KMeans clustering
-    character_relationships_groups = analysis.estimate_relationships(len(relationships_levels))
+    character_relationships_groups = analysis.characters_relationships(len(relationships_levels))
 
     # Smaller size = closer relationship
     sorted_by_length = sorted(character_relationships_groups.items(), key=lambda x: len(x[1]))
