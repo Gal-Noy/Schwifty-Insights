@@ -43,7 +43,7 @@ def estimate_relationships(n_clusters: int = 10):
 def species_survival():
     """
     Analyze the correlation between a character's species and their status.
-    :return:
+    :return: List of species and their survival rates
     """
     species_counts, status_counts = {}, {}
     characters = cache.get_all_characters()
@@ -78,7 +78,7 @@ def species_survival():
 def native_species():
     """
     Estimate the native species of each location.
-    :return:
+    :return: List of locations and their native species
     """
     characters = cache.get_all_characters()
     locations = cache.get_all_locations()
@@ -101,3 +101,90 @@ def native_species():
         native_species_list.append((location["name"], species[native_species_idx]))
 
     return native_species_list
+
+
+def dangerous_locations(danger_threshold: float = 0.75):
+    """
+    Analyze the correlation between a character's location and their status.
+    Are there locations with higher mortality rates?
+    :param danger_threshold:  Threshold for dangerous locations
+    :return:  List of dangerous locations and their danger rates
+    """
+    characters = cache.get_all_characters()
+    locations = cache.get_all_locations()
+    statuses = list(set([character["status"] for character in characters]))
+
+    # Create a matrix where each row is a location and each column is a status
+    # The value is the number of characters with that status in that location
+    matrix = np.zeros((len(locations), len(statuses)))
+    for character in characters:
+        c_location = character["location"]["url"].split("/")[-1]
+        if c_location != "":
+            location_idx = [location["id"] for location in locations].index(int(c_location))
+            status_idx = statuses.index(character["status"])
+            matrix[location_idx, status_idx] += 1
+
+    # Find the most dangerous locations
+    dangerous_locations_list = []
+    dead_idx, unknown_idx = statuses.index("Dead"), statuses.index("unknown")
+    for i, location in enumerate(locations):
+        row_sum = np.sum(matrix[i])
+        danger_rate = (matrix[i, dead_idx] + matrix[i, unknown_idx]) / row_sum if row_sum > 0 else 0
+        if danger_rate >= danger_threshold:
+            dangerous_locations_list.append((location["name"], danger_rate))
+
+    return dangerous_locations_list
+
+
+def dimension_species_diversity(n_clusters: int = 5):
+    """
+    List dimensions and the number of species that appear in each one.
+    Are there dimensions with higher species diversity?
+    :param n_clusters:  Number of diversity levels
+    :return:  List of dimensions and their species diversity
+    """
+    characters = cache.get_all_characters()
+    species = list(set([character["species"] for character in characters]))
+    locations = cache.get_all_locations()
+    dimensions = list(set([location["dimension"] for location in locations]))
+    dimensions = [dimension for dimension in dimensions if dimension != "unknown"]
+
+    # Create a matrix where each row is a dimension and each column is a species
+    # The value is 1 if the species appears in that dimension, 0 otherwise
+    matrix = np.zeros((len(dimensions), len(species)))
+    for character in characters:
+        c_location = character["location"]["url"].split("/")[-1]
+        if c_location != "":
+            location_idx = [location["id"] for location in locations].index(int(c_location))
+            c_dimension = locations[location_idx]["dimension"]
+            if c_dimension != "" and c_dimension != "unknown":
+                dimension_idx = dimensions.index(c_dimension)
+                species_idx = species.index(character["species"])
+                matrix[dimension_idx, species_idx] = 1
+
+    # Apply KMeans clustering to group dimensions
+    kmeans = KMeans(n_clusters=n_clusters)
+    kmeans.fit(matrix)
+    clusters = kmeans.predict(matrix)
+
+    # Create a list of dimension Name and their corresponding clusters
+    dimension_clusters = [(dimension, cluster_id) for dimension, cluster_id in zip(dimensions, clusters)]
+
+    # Sort dimensions based on their clusters
+    sorted_dimensions = sorted(dimension_clusters, key=lambda x: x[1])
+
+    # Group dimensions by cluster
+    dimension_species_diversity_groups = {}
+    for dimension, cluster_id in sorted_dimensions:
+        if cluster_id not in dimension_species_diversity_groups:
+            dimension_species_diversity_groups[cluster_id] = []
+        dimension_species_diversity_groups[cluster_id].append(dimension)
+
+    # Sort clusters based on the average amount of species in each cluster
+    clusters_avg_species_count = {}
+    for cluster_id, dimensions in dimension_species_diversity_groups.items():
+        avg_species_count = np.mean([np.sum(matrix[dimensions.index(dimension)]) for dimension in dimensions])
+        clusters_avg_species_count[cluster_id] = avg_species_count
+
+    return sorted(dimension_species_diversity_groups.items(),
+                  key=lambda x: clusters_avg_species_count[x[0]])
