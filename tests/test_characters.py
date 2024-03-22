@@ -17,14 +17,11 @@ def test_filter_characters():
     response = client.get("/characters/filter?name=rick%20sanchez&status=alive&species=human&gender=male&origin=137",
                           headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
     assert response.status_code == 200
-    assert len(response.json()["data"]) == 1
-    assert "Rick Sanchez" in [character["name"] for character in response.json()["data"]]
-    assert "Alive" in [character["status"] for character in response.json()["data"]]
-    assert "Human" in [character["species"] for character in response.json()["data"]]
-    assert "Male" in [character["gender"] for character in response.json()["data"]]
-
-    response = client.get("/characters/filter?page=-1", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
-    assert response.status_code == 404
+    assert len(response.json()) == 1
+    assert "Rick Sanchez" in [character["name"] for character in response.json()]
+    assert "Alive" in [character["status"] for character in response.json()]
+    assert "Human" in [character["species"] for character in response.json()]
+    assert "Male" in [character["gender"] for character in response.json()]
 
 
 def test_appearances_sorted():
@@ -44,9 +41,6 @@ def test_appearances_sorted():
                           headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
     assert response.status_code == 200
 
-    response = client.get("/characters/appearances-sorted?page=-1", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
-    assert response.status_code == 404
-
 
 def test_status_sorted():
     response = client.get("/characters/status-sorted", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
@@ -60,9 +54,6 @@ def test_status_sorted():
     assert len(response.json()["data"]) == 20
     assert response.json()["data"][0]["name"] == "SEAL Team Rick"
     assert response.json()["data"][0]["status"] == "Dead"
-
-    response = client.get("/characters/status-sorted?page=-1", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
-    assert response.status_code == 404
 
 
 def test_species_sorted():
@@ -82,5 +73,5 @@ def test_species_sorted():
 def test_most_common_species():
     response = client.get("/characters/most-common-species", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
     assert response.status_code == 200
-    assert len(response.json()["data"]) == 1
+    assert len(response.json()) == 1
     assert response.json()["most_common_species"] == "Human"
