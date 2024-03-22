@@ -6,6 +6,11 @@ import numpy as np
 # Unsupervised - we don't have labels for relationships between characters
 # We can use clustering algorithms to group characters based on their appearances in same episodes
 def estimate_relationships(n_clusters: int = 10):
+    """
+    Estimate relationships between characters according to their appearances in the whole series.
+    :param n_clusters:  Number of clusters to group characters
+    :return:  Dictionary where keys are cluster IDs and values are lists of character IDs
+    """
     characters = cache.get_all_characters()
     episodes = cache.get_all_episodes()
 

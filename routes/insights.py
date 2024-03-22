@@ -9,6 +9,8 @@ router = APIRouter()
 async def estimate_relationships(page: int = 1):
     """
     Estimate relationships between characters according to their appearances in the whole series.
+    :param page:
+    :return:  List of tuples with the relationship level and the characters that have that relationship.
     """
 
     relationships_levels = {
@@ -29,7 +31,7 @@ async def estimate_relationships(page: int = 1):
     # Smaller size = closer relationship
     sorted_by_length = sorted(character_relationships_groups.items(), key=lambda x: len(x[1]))
 
-    # label the items lists according to the relationship levels, dno't keep cluster id
+    # Label relationships with levels
     relationships_labeled = []
     for i, (cluster_id, items) in enumerate(sorted_by_length):
         relationships_labeled.append((relationships_levels[i], items))

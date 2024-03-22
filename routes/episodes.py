@@ -11,7 +11,12 @@ async def filter_episodes(name: str = None,
                           character_ids: str = None,
                           page: int = 1):
     """
-    Filter episodes by various parameters
+    Filter episodes by name, episode, and characters
+    :param name:
+    :param episode:
+    :param character_ids:
+    :param page:
+    :return:  List of episodes
     """
     episodes = cache.get_all_episodes()
 
@@ -31,7 +36,10 @@ async def filter_episodes(name: str = None,
 async def character_count_sorted(page: int = 1,
                                  verbose: bool = False):
     """
-    All episodes sorted by most characters
+    All episodes sorted by character count
+    :param page:
+    :param verbose:
+    :return:  List of episodes
     """
     episodes = cache.get_all_episodes()
     episodes = sorted(episodes, key=lambda x: len(x["characters"]), reverse=True)
@@ -45,6 +53,9 @@ async def air_date_sorted(page: int = 1,
                           verbose: bool = False):
     """
     All episodes sorted by air date
+    :param page:
+    :param verbose:
+    :return:  List of episodes
     """
     episodes = cache.get_all_episodes()
     episodes = sorted(episodes, key=lambda x: x["air_date"], reverse=True)

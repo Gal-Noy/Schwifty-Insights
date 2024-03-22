@@ -1,4 +1,10 @@
 def paginate_list(elements, page):
+    """
+    Paginate a list of elements
+    :param elements:
+    :param page:
+    :return:  List of elements paginated
+    """
     if not page or page < 1:
         return {"error": "Invalid page number"}
     if len(elements) <= 20:
@@ -10,6 +16,12 @@ def paginate_list(elements, page):
 
 
 def paginate_list_of_tuples(elements, page):
+    """
+    Paginate a list of tuples
+    :param elements:
+    :param page:
+    :return:  List of tuples paginated
+    """
     if not page or page < 1:
         return {"error": "Invalid page number"}
 

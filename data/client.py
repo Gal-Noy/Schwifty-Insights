@@ -7,6 +7,10 @@ API_URL = "https://rickandmortyapi.com/api"
 
 
 def fetch_all_characters():
+    """
+    Fetch all characters from the API
+    :return:  List of characters
+    """
     page = 1
     characters = []
     while True:
@@ -22,12 +26,21 @@ def fetch_all_characters():
 
 
 def fetch_single_character(character_id):
+    """
+    Fetch a single character by ID
+    :param character_id:
+    :return:  Character data
+    """
     url = f"{API_URL}/character/{character_id}"
     response = requests.get(url)
     return response.json()
 
 
 def fetch_all_locations():
+    """
+    Fetch all locations from the API
+    :return:  List of locations
+    """
     page = 1
     locations = []
     while True:
@@ -43,12 +56,21 @@ def fetch_all_locations():
 
 
 def fetch_single_location(location_id):
+    """
+    Fetch a single location by ID
+    :param location_id:
+    :return:  Location data
+    """
     url = f"{API_URL}/location/{location_id}"
     response = requests.get(url)
     return response.json()
 
 
 def fetch_all_episodes():
+    """
+    Fetch all episodes from the API
+    :return:  List of episodes
+    """
     page = 1
     episodes = []
     while True:
@@ -64,6 +86,11 @@ def fetch_all_episodes():
 
 
 def fetch_single_episode(episode_id):
+    """
+    Fetch a single episode by ID
+    :param episode_id:  Episode ID
+    :return:
+    """
     url = f"{API_URL}/episode/{episode_id}"
     response = requests.get(url)
     return response.json()

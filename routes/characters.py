@@ -15,7 +15,16 @@ async def filter_characters(name: str = None,
                             location: str = None,
                             page: int = 1):
     """
-    Filter characters by various parameters
+    Filter characters based on various attributes
+    :param name:
+    :param status:
+    :param species:
+    :param type:
+    :param gender:
+    :param origin:
+    :param location:
+    :param page:
+    :return: List of characters
     """
     characters = cache.get_all_characters()
 
@@ -42,7 +51,10 @@ async def filter_characters(name: str = None,
 async def appearances_sorted(page: int = 1,
                              verbose: bool = False):
     """
-    All characters sorted by most appearances in episodes
+    All characters sorted by number of appearances
+    :param page:
+    :param verbose:
+    :return:  List of characters
     """
     characters = cache.get_all_characters()
     characters = sorted(characters, key=lambda x: len(x["episode"]), reverse=True)
@@ -55,7 +67,10 @@ async def appearances_sorted(page: int = 1,
 async def status_sorted(page: int = 1,
                         verbose: bool = False):
     """
-    All characters sorted by status
+
+    :param page:
+    :param verbose:
+    :return:  List of characters
     """
     characters = cache.get_all_characters()
     characters = sorted(characters, key=lambda x: x["status"])
@@ -69,6 +84,9 @@ async def species_sorted(page: int = 1,
                          verbose: bool = False):
     """
     All characters sorted by species
+    :param page:
+    :param verbose:
+    :return:  List of characters
     """
     characters = cache.get_all_characters()
     characters = sorted(characters, key=lambda x: x["species"])
@@ -80,7 +98,8 @@ async def species_sorted(page: int = 1,
 @router.get("/most-common-species")
 async def most_common_species():
     """
-    Most common species among characters
+    Most common species among all characters
+    :return:  Most common species
     """
     characters = cache.get_all_characters()
     species = {}
