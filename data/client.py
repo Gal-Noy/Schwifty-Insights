@@ -1,15 +1,13 @@
 import os
 import requests
 
-# API_URL = os.environ.get('API_URL')
-
-API_URL = "https://rickandmortyapi.com/api"
+API_URL = os.getenv('API_URL')
 
 
 def fetch_all_characters():
     """
     Fetch all characters from the API
-    :return:  List of characters
+    :return: List of characters
     """
     page = 1
     characters = []
@@ -25,21 +23,10 @@ def fetch_all_characters():
     return characters
 
 
-def fetch_single_character(character_id):
-    """
-    Fetch a single character by ID
-    :param character_id:
-    :return:  Character data
-    """
-    url = f"{API_URL}/character/{character_id}"
-    response = requests.get(url)
-    return response.json()
-
-
 def fetch_all_locations():
     """
     Fetch all locations from the API
-    :return:  List of locations
+    :return: List of locations
     """
     page = 1
     locations = []
@@ -55,21 +42,10 @@ def fetch_all_locations():
     return locations
 
 
-def fetch_single_location(location_id):
-    """
-    Fetch a single location by ID
-    :param location_id:
-    :return:  Location data
-    """
-    url = f"{API_URL}/location/{location_id}"
-    response = requests.get(url)
-    return response.json()
-
-
 def fetch_all_episodes():
     """
     Fetch all episodes from the API
-    :return:  List of episodes
+    :return: List of episodes
     """
     page = 1
     episodes = []
@@ -83,15 +59,3 @@ def fetch_all_episodes():
         else:
             break
     return episodes
-
-
-def fetch_single_episode(episode_id):
-    """
-    Fetch a single episode by ID
-    :param episode_id:  Episode ID
-    :return:
-    """
-    url = f"{API_URL}/episode/{episode_id}"
-    response = requests.get(url)
-    return response.json()
-

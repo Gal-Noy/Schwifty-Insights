@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 import utils.auth as u_auth
 import data.users as users
 
@@ -13,7 +13,7 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     """
     Login endpoint
     :param form_data:
-    :return:
+    :return: Access token
     """
     user = u_auth.authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -31,7 +31,7 @@ def register(username: str, password: str):
     Register endpoint
     :param username:
     :param password:
-    :return:
+    :return: Message
     """
     hashed_password = u_auth.pwd_context.hash(password)
     user = users.User(username=username, password=hashed_password)

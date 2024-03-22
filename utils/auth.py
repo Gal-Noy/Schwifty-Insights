@@ -8,8 +8,8 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.environ.get('SECRET_KEY', 'wubba-lubba-dub-dub')
-TOKEN_EXPIRATION = os.environ.get('TOKEN_EXPIRATION', 3600)
+SECRET_KEY = os.getenv('SECRET_KEY')
+TOKEN_EXPIRATION = os.getenv('TOKEN_EXPIRATION')
 ALGORITHM = "HS256"
 
 
@@ -28,7 +28,7 @@ def authenticate_user(username, password):
     Authenticate a user
     :param username:
     :param password:
-    :return:  True if the user is authenticated, False otherwise
+    :return: True if the user is authenticated, False otherwise
     """
     user = users.get_user(username)
     if not user:
@@ -43,7 +43,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     Create an access token
     :param data:
     :param expires_delta:
-    :return:  Access token
+    :return: Access token
     """
     to_encode = data.copy()
     if expires_delta:
@@ -59,7 +59,7 @@ def verify_token(authorization: str = Header(...)):
     """
     Verify a token
     :param authorization:
-    :return:  Token
+    :return: Token
     """
     try:
         token = authorization.split("Bearer ")[1]

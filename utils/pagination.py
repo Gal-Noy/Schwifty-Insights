@@ -1,6 +1,6 @@
 import os
 
-page_size = os.environ.get("PAGE_SIZE", 20)
+page_size = int(os.getenv("PAGE_SIZE"))
 
 
 def paginate_list(elements, page):
@@ -8,7 +8,7 @@ def paginate_list(elements, page):
     Paginate a list of elements
     :param elements:
     :param page:
-    :return:  List of elements paginated
+    :return: List of elements paginated
     """
     if not page or page < 1:
         return {"error": "Invalid page number"}
@@ -25,7 +25,7 @@ def paginate_list_of_tuples(elements, page):
     Paginate a list of tuples
     :param elements:
     :param page:
-    :return:  List of tuples paginated
+    :return: List of tuples paginated
     """
     if not page or page < 1:
         return {"error": "Invalid page number"}

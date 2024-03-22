@@ -8,6 +8,7 @@ router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
+
 @router.get("/filter")
 async def filter_characters(token: Annotated[str, Depends(oauth2_scheme)],
                             page: int = 1,
@@ -59,7 +60,7 @@ async def appearances_sorted(page: int = 1,
     All characters sorted by number of appearances
     :param page:
     :param verbose:
-    :return:  List of characters
+    :return: List of characters
     """
     characters = cache.get_all_characters()
     characters = sorted(characters, key=lambda x: len(x["episode"]), reverse=True)
@@ -75,7 +76,7 @@ async def status_sorted(page: int = 1,
 
     :param page:
     :param verbose:
-    :return:  List of characters
+    :return: List of characters
     """
     characters = cache.get_all_characters()
     characters = sorted(characters, key=lambda x: x["status"])
@@ -91,7 +92,7 @@ async def species_sorted(page: int = 1,
     All characters sorted by species
     :param page:
     :param verbose:
-    :return:  List of characters
+    :return: List of characters
     """
     characters = cache.get_all_characters()
     characters = sorted(characters, key=lambda x: x["species"])
@@ -104,7 +105,7 @@ async def species_sorted(page: int = 1,
 async def most_common_species():
     """
     Most common species among all characters
-    :return:  Most common species
+    :return: Most common species
     """
     characters = cache.get_all_characters()
     species = {}

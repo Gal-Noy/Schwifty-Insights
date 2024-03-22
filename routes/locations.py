@@ -18,7 +18,7 @@ async def filter_locations(name: str = None,
     :param dimension:
     :param at_least_residents:
     :param page:
-    :return:  List of locations
+    :return: List of locations
     """
     locations = cache.get_all_locations()
 
@@ -40,7 +40,7 @@ async def residents_sorted(page: int = 1,
     All locations sorted by number of residents
     :param page:
     :param verbose:
-    :return:  List of locations
+    :return: List of locations
     """
     locations = cache.get_all_locations()
     locations = sorted(locations, key=lambda x: len(x["residents"]), reverse=True)
@@ -51,12 +51,12 @@ async def residents_sorted(page: int = 1,
 
 @router.get("/type-sorted")
 async def type_sorted(page: int = 1,
-                        verbose: bool = False):
+                      verbose: bool = False):
     """
     All locations sorted by type
     :param page:
     :param verbose:
-    :return:  List of locations
+    :return: List of locations
     """
     locations = cache.get_all_locations()
     locations = sorted(locations, key=lambda x: x["type"], reverse=True)
@@ -69,7 +69,7 @@ async def type_sorted(page: int = 1,
 async def most_common_dimension():
     """
     Find the most common dimension among all locations
-    :return:  Most common dimension
+    :return: Most common dimension
     """
     locations = cache.get_all_locations()
     dimensions = {}

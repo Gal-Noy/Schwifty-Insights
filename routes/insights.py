@@ -10,7 +10,7 @@ async def characters_relationships(page: int = 1):
     """
     Estimate relationships between characters according to their appearances in the whole series.
     :param page:
-    :return:  List of tuples with the relationship level and the characters that have that relationship.
+    :return: List of tuples with the relationship level and the characters that have that relationship.
     """
 
     relationships_levels = {
@@ -37,7 +37,7 @@ async def characters_relationships(page: int = 1):
     for i, (cluster_id, items) in enumerate(sorted_by_length):
         relationships_labeled.append((relationships_levels[i], items))
 
-    return utils.paginate_list_of_tuples(relationships_labeled, page)
+    return pagination.paginate_list_of_tuples(relationships_labeled, page)
 
 
 @router.get("/dimension-species-diversity")
@@ -64,7 +64,7 @@ async def dimension_species_diversity(page: int = 1):
     for i, (cluster_id, items) in enumerate(dimension_species_diversity_groups):
         diversity_labeled.append((diversity_level[i], items))
 
-    return utils.paginate_list_of_tuples(diversity_labeled, page)
+    return pagination.paginate_list_of_tuples(diversity_labeled, page)
 
 
 @router.get("/dangerous-locations")
@@ -78,7 +78,7 @@ async def dangerous_locations(page: int = 1):
     danger_threshold = 0.75  # 75% of characters in a location are dead or unknown
     result = analysis.dangerous_locations(danger_threshold)
     sorted_by_danger = sorted(result, key=lambda x: x[1], reverse=True)
-    return utils.paginate_list([(label, f"Mortality Rate: {_ * 100}%") for label, _ in sorted_by_danger], page)
+    return pagination.paginate_list([(label, f"Mortality Rate: {_ * 100}%") for label, _ in sorted_by_danger], page)
 
 
 @router.get("/species-survival")
@@ -101,7 +101,7 @@ async def native_species(page: int = 1):
     :param page:
     :return: List of locations and their native species
     """
-    return utils.paginate_list(analysis.native_species(), page)
+    return pagination.paginate_list(analysis.native_species(), page)
 
 
 @router.get("/gender-by-location-type")
@@ -118,13 +118,13 @@ async def gender_by_location_type(page: int = 1):
         re_ordered.setdefault(v, []).append(k)
 
     result = [(v, keys) for v, keys in re_ordered.items()]
-    return utils.paginate_list(result, page)
+    return pagination.paginate_list(result, page)
 
 
 @router.get("/frequent-travelers")
 async def frequent_travelers(page: int = 1):
     """
     Report characters which change locations frequently.
-    :return:  List of characters who change locations frequently
+    :return: List of characters who change locations frequently
     """
-    return utils.paginate_list(analysis.frequent_travelers(), page)
+    return pagination.paginate_list(analysis.frequent_travelers(), page)

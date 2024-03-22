@@ -16,7 +16,7 @@ async def filter_episodes(name: str = None,
     :param episode:
     :param character_ids:
     :param page:
-    :return:  List of episodes
+    :return: List of episodes
     """
     episodes = cache.get_all_episodes()
 
@@ -39,7 +39,7 @@ async def character_count_sorted(page: int = 1,
     All episodes sorted by character count
     :param page:
     :param verbose:
-    :return:  List of episodes
+    :return: List of episodes
     """
     episodes = cache.get_all_episodes()
     episodes = sorted(episodes, key=lambda x: len(x["characters"]), reverse=True)
@@ -55,7 +55,7 @@ async def air_date_sorted(page: int = 1,
     All episodes sorted by air date
     :param page:
     :param verbose:
-    :return:  List of episodes
+    :return: List of episodes
     """
     episodes = cache.get_all_episodes()
     episodes = sorted(episodes, key=lambda x: x["air_date"], reverse=True)
