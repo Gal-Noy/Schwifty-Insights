@@ -1,5 +1,7 @@
 import os
 
+from fastapi import HTTPException
+
 page_size = int(os.getenv("PAGE_SIZE"))
 
 
@@ -11,7 +13,7 @@ def paginate_list(elements, page):
     :return: List of elements paginated
     """
     if not page or page < 1:
-        return {"error": "Invalid page number"}
+        return HTTPException(status_code=404, detail="Invalid page number")
     if len(elements) <= page_size:
         return elements
     return {
@@ -28,7 +30,7 @@ def paginate_list_of_tuples(elements, page):
     :return: List of tuples paginated
     """
     if not page or page < 1:
-        return {"error": "Invalid page number"}
+        return HTTPException(status_code=404, detail="Invalid page number")
 
     total_items = sum([len(value) for key, value in elements])
     starting_index = min(total_items - page_size, (page - 1) * page_size)

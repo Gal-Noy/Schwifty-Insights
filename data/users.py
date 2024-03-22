@@ -1,6 +1,10 @@
+import os
+
 from pydantic import BaseModel
 
-users_db = {}
+users_db = {
+    "test": os.getenv('TEST_USER_HASHED_PASSWORD')  # password: "test"
+}
 
 
 class User(BaseModel):

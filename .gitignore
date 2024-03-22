@@ -1,0 +1,29 @@
+# Ignore Python virtual environment
+venv/
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore IDE and editor-specific files
+.idea/
+.vscode/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore environment-specific files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore dependencies (if using pipenv, poetry, or similar)
+# Example for pipenv:
+Pipfile
+Pipfile.lock
+
+# Ignore generated files or build artifacts
+/build/
+/dist/
+*.egg-info/
