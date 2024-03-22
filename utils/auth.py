@@ -1,6 +1,7 @@
 import os
 
 from fastapi import Header
+from fastapi.security import OAuth2PasswordBearer
 
 import data.users as users
 from jose import jwt
@@ -8,8 +9,9 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 SECRET_KEY = os.getenv('SECRET_KEY')
-TOKEN_EXPIRATION = os.getenv('TOKEN_EXPIRATION')
+TOKEN_EXPIRATION = int(os.getenv('TOKEN_EXPIRATION'))
 ALGORITHM = "HS256"
 
 

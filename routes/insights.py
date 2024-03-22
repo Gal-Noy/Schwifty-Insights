@@ -1,14 +1,19 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
 import data.analysis as analysis
 from utils import pagination
+from utils.auth import oauth2_scheme
 
 router = APIRouter()
 
 
 @router.get("/characters-relationships")
-async def characters_relationships(page: int = 1):
+async def characters_relationships(token: Annotated[str, Depends(oauth2_scheme)],
+                                   page: int = 1):
     """
     Estimate relationships between characters according to their appearances in the whole series.
+    :param token:
     :param page:
     :return: List of tuples with the relationship level and the characters that have that relationship.
     """
@@ -41,10 +46,12 @@ async def characters_relationships(page: int = 1):
 
 
 @router.get("/dimension-species-diversity")
-async def dimension_species_diversity(page: int = 1):
+async def dimension_species_diversity(token: Annotated[str, Depends(oauth2_scheme)],
+                                      page: int = 1):
     """
     List dimensions and the number of species that appear in each one.
     Are there dimensions with higher species diversity?
+    :param token:
     :param page:
     :return: List of dimensions and their species diversity
     """
@@ -68,10 +75,12 @@ async def dimension_species_diversity(page: int = 1):
 
 
 @router.get("/dangerous-locations")
-async def dangerous_locations(page: int = 1):
+async def dangerous_locations(token: Annotated[str, Depends(oauth2_scheme)],
+                              page: int = 1):
     """
     Analyze the correlation between a character's location and their status.
     Are there locations with higher mortality rates?
+    :param token:
     :param page:
     :return: List of locations and their mortality rates
     """
@@ -82,10 +91,11 @@ async def dangerous_locations(page: int = 1):
 
 
 @router.get("/species-survival")
-async def species_survival():
+async def species_survival(token: Annotated[str, Depends(oauth2_scheme)]):
     """
     Analyze the correlation between a character's species and their status.
     Are there species that are more likely to survive?
+    :param token:
     :return: List of species and their survival rates
     """
     species_survival_rates = analysis.species_survival()
@@ -95,9 +105,11 @@ async def species_survival():
 
 
 @router.get("/native-species")
-async def native_species(page: int = 1):
+async def native_species(token: Annotated[str, Depends(oauth2_scheme)],
+                         page: int = 1):
     """
     Estimate the native species of each location.
+    :param token:
     :param page:
     :return: List of locations and their native species
     """
@@ -105,9 +117,11 @@ async def native_species(page: int = 1):
 
 
 @router.get("/gender-by-location-type")
-async def gender_by_location_type(page: int = 1):
+async def gender_by_location_type(token: Annotated[str, Depends(oauth2_scheme)],
+                                  page: int = 1):
     """
     Analyze the correlation between a character's gender and their location type.
+    :param token:
     :param page:
     :return: List of locations types and their most common gender
     """
@@ -122,9 +136,12 @@ async def gender_by_location_type(page: int = 1):
 
 
 @router.get("/frequent-travelers")
-async def frequent_travelers(page: int = 1):
+async def frequent_travelers(token: Annotated[str, Depends(oauth2_scheme)],
+                             page: int = 1):
     """
     Report characters which change locations frequently.
+    :param page:
+    :param token:
     :return: List of characters who change locations frequently
     """
     return pagination.paginate_list(analysis.frequent_travelers(), page)

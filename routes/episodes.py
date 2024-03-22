@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from typing import Annotated
+from fastapi import APIRouter, Depends
+from utils.auth import oauth2_scheme
 from utils.pagination import paginate_list
 import data.cache as cache
 
@@ -6,12 +8,14 @@ router = APIRouter()
 
 
 @router.get("/filter")
-async def filter_episodes(name: str = None,
+async def filter_episodes(token: Annotated[str, Depends(oauth2_scheme)],
+                          name: str = None,
                           episode: str = None,
                           character_ids: str = None,
                           page: int = 1):
     """
     Filter episodes by name, episode, and characters
+    :param token:
     :param name:
     :param episode:
     :param character_ids:
@@ -33,10 +37,12 @@ async def filter_episodes(name: str = None,
 
 
 @router.get("/character-count-sorted")
-async def character_count_sorted(page: int = 1,
+async def character_count_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                                 page: int = 1,
                                  verbose: bool = False):
     """
     All episodes sorted by character count
+    :param token:
     :param page:
     :param verbose:
     :return: List of episodes
@@ -49,10 +55,12 @@ async def character_count_sorted(page: int = 1,
 
 
 @router.get("/air-date-sorted")
-async def air_date_sorted(page: int = 1,
+async def air_date_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                          page: int = 1,
                           verbose: bool = False):
     """
     All episodes sorted by air date
+    :param token:
     :param page:
     :param verbose:
     :return: List of episodes

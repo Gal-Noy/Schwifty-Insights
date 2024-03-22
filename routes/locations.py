@@ -1,4 +1,8 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+
+from utils.auth import oauth2_scheme
 from utils.pagination import paginate_list
 import data.cache as cache
 
@@ -6,13 +10,15 @@ router = APIRouter()
 
 
 @router.get("/filter")
-async def filter_locations(name: str = None,
+async def filter_locations(token: Annotated[str, Depends(oauth2_scheme)],
+                           name: str = None,
                            type: str = None,
                            dimension: str = None,
                            at_least_residents: int = None,
                            page: int = 1):
     """
     Filter locations based on various attributes
+    :param token:
     :param name:
     :param type:
     :param dimension:
@@ -34,10 +40,12 @@ async def filter_locations(name: str = None,
 
 
 @router.get("/residents-sorted")
-async def residents_sorted(page: int = 1,
+async def residents_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                           page: int = 1,
                            verbose: bool = False):
     """
     All locations sorted by number of residents
+    :param token:
     :param page:
     :param verbose:
     :return: List of locations
@@ -50,10 +58,12 @@ async def residents_sorted(page: int = 1,
 
 
 @router.get("/type-sorted")
-async def type_sorted(page: int = 1,
+async def type_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                      page: int = 1,
                       verbose: bool = False):
     """
     All locations sorted by type
+    :param token:
     :param page:
     :param verbose:
     :return: List of locations
@@ -66,9 +76,10 @@ async def type_sorted(page: int = 1,
 
 
 @router.get("/most-common-dimension")
-async def most_common_dimension():
+async def most_common_dimension(token: Annotated[str, Depends(oauth2_scheme)]):
     """
     Find the most common dimension among all locations
+    :param token:
     :return: Most common dimension
     """
     locations = cache.get_all_locations()

@@ -1,12 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordBearer
+from utils.auth import oauth2_scheme
 from utils.pagination import paginate_list
 import data.cache as cache
 
 router = APIRouter()
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 @router.get("/filter")
@@ -54,10 +52,12 @@ async def filter_characters(token: Annotated[str, Depends(oauth2_scheme)],
 
 
 @router.get("/appearances-sorted")
-async def appearances_sorted(page: int = 1,
+async def appearances_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                             page: int = 1,
                              verbose: bool = False):
     """
     All characters sorted by number of appearances
+    :param token:
     :param page:
     :param verbose:
     :return: List of characters
@@ -70,10 +70,12 @@ async def appearances_sorted(page: int = 1,
 
 
 @router.get("/status-sorted")
-async def status_sorted(page: int = 1,
+async def status_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                        page: int = 1,
                         verbose: bool = False):
     """
 
+    :param token:
     :param page:
     :param verbose:
     :return: List of characters
@@ -86,10 +88,12 @@ async def status_sorted(page: int = 1,
 
 
 @router.get("/species-sorted")
-async def species_sorted(page: int = 1,
+async def species_sorted(token: Annotated[str, Depends(oauth2_scheme)],
+                         page: int = 1,
                          verbose: bool = False):
     """
     All characters sorted by species
+    :param token:
     :param page:
     :param verbose:
     :return: List of characters
@@ -102,9 +106,10 @@ async def species_sorted(page: int = 1,
 
 
 @router.get("/most-common-species")
-async def most_common_species():
+async def most_common_species(token: Annotated[str, Depends(oauth2_scheme)]):
     """
     Most common species among all characters
+    :param token:
     :return: Most common species
     """
     characters = cache.get_all_characters()

@@ -22,3 +22,12 @@ app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
+@app.get("/")
+def read_root():
+    """
+    Root endpoint
+    :return: Message
+    """
+    return {"Wubba Lubba Dub Dub!"}
