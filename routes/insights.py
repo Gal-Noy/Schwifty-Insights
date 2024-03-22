@@ -52,13 +52,14 @@ async def species_survival():
             for species, survival_rate in sorted_by_survival_rate]
 
 
-@router.get("/species-location-correlation")
-async def species_location_correlation():
+@router.get("/native-species")
+async def native_species(page: int = 1):
     """
-    Analyze the correlation between a character's species and their location.
-    Are there species that are more likely to be in a specific location?
+    Estimate the native species of each location.
+    :param page:
+    :return:  List of locations and their native species
     """
-    return {"message": "Species by location"}
+    return utils.paginate_list(analysis.native_species(), page)
 
 
 @router.get("/location-status-correlation")

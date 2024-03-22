@@ -41,6 +41,10 @@ def estimate_relationships(n_clusters: int = 10):
 
 
 def species_survival():
+    """
+    Analyze the correlation between a character's species and their status.
+    :return:
+    """
     species_counts, status_counts = {}, {}
     characters = cache.get_all_characters()
 
@@ -69,3 +73,31 @@ def species_survival():
 
     return {f"{species} ({species_counts[species]})": survival_rate
             for species, survival_rate in species_survival_rates.items()}
+
+
+def native_species():
+    """
+    Estimate the native species of each location.
+    :return:
+    """
+    characters = cache.get_all_characters()
+    locations = cache.get_all_locations()
+    species = list(set([character["species"] for character in characters]))
+
+    # Create a matrix where each row is a location and each column is a species
+    # The value is the number of characters of that species in that location
+    matrix = np.zeros((len(locations), len(species)))
+    for character in characters:
+        c_origin = character["origin"]["url"].split("/")[-1]
+        if c_origin != "":
+            location_idx = [location["id"] for location in locations].index(int(c_origin))
+            species_idx = species.index(character["species"])
+            matrix[location_idx, species_idx] += 1
+
+    # Find the most common species in each location
+    native_species_list = []
+    for i, location in enumerate(locations):
+        native_species_idx = np.argmax(matrix[i])
+        native_species_list.append((location["name"], species[native_species_idx]))
+
+    return native_species_list
