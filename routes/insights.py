@@ -10,15 +10,31 @@ async def estimate_relationships(page: int = 1):
     """
     Estimate relationships between characters according to their appearances in the whole series.
     """
-    if not page or page < 1 or page > 10:
-        return {"error": "Invalid page number. Please select a page between 1 and 10."}
 
-    n_clusters = 10
-    character_relationships_groups = analysis.estimate_relationships(n_clusters)
-    character_relationships_groups = sorted(character_relationships_groups.items(), key=lambda x: len(x[1]))
+    relationships_levels = {
+        0: "Very Close Relationship",
+        1: "Close Relationship",
+        2: "Strong Relationship",
+        3: "Good Relationship",
+        4: "Normal Relationship",
+        5: "Fair Relationship",
+        6: "Weak Relationship",
+        7: "Poor Relationship",
+        8: "Very Poor Relationship",
+        9: "Farthest Relationship"
+    }
 
-    return {"page": f"{page}/{n_clusters}", "relationship_level": utils.relationship_levels[page],
-            "character_group": character_relationships_groups[page - 1][1]}
+    character_relationships_groups = analysis.estimate_relationships(len(relationships_levels))
+
+    # Smaller size = closer relationship
+    sorted_by_length = sorted(character_relationships_groups.items(), key=lambda x: len(x[1]))
+
+    # label the items lists according to the relationship levels, dno't keep cluster id
+    relationships_labeled = []
+    for i, (cluster_id, items) in enumerate(sorted_by_length):
+        relationships_labeled.append((relationships_levels[i], items))
+
+    return utils.paginate_list_of_tuples(relationships_labeled, page)
 
 
 @router.get("/species-status-correlation")

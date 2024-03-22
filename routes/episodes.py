@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from utils import paginate
+from utils import paginate_list
 import data.cache as cache
 
 router = APIRouter()
@@ -24,7 +24,7 @@ async def filter_episodes(name: str = None,
         episodes = [episode for episode in episodes if
                     all([character_id in [character.split("/")[-1] for character in episode["characters"]]
                          for character_id in character_ids])]
-    return paginate(episodes, page)
+    return paginate_list(episodes, page)
 
 
 @router.get("/character-count-sorted")
@@ -37,7 +37,7 @@ async def character_count_sorted(page: int = 1,
     episodes = sorted(episodes, key=lambda x: len(x["characters"]), reverse=True)
     if not verbose:
         episodes = [{"name": episode["name"], "character_count": len(episode["characters"])} for episode in episodes]
-    return paginate(episodes, page)
+    return paginate_list(episodes, page)
 
 
 @router.get("/air-date-sorted")
@@ -50,4 +50,4 @@ async def air_date_sorted(page: int = 1,
     episodes = sorted(episodes, key=lambda x: x["air_date"], reverse=True)
     if not verbose:
         episodes = [{"name": episode["name"], "air_date": episode["air_date"]} for episode in episodes]
-    return paginate(episodes, page)
+    return paginate_list(episodes, page)

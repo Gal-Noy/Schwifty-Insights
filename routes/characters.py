@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from utils import paginate
+from utils import paginate_list
 import data.cache as cache
 
 router = APIRouter()
@@ -35,7 +35,7 @@ async def filter_characters(name: str = None,
         characters = [character for character in characters if
                       character["location"]["name"].lower().find(location) != -1]
 
-    return paginate(characters, page)
+    return paginate_list(characters, page)
 
 
 @router.get("/appearances-sorted")
@@ -48,7 +48,7 @@ async def appearances_sorted(page: int = 1,
     characters = sorted(characters, key=lambda x: len(x["episode"]), reverse=True)
     if not verbose:
         characters = [{"name": character["name"], "appearances": len(character["episode"])} for character in characters]
-    return paginate(characters, page)
+    return paginate_list(characters, page)
 
 
 @router.get("/status-sorted")
@@ -61,7 +61,7 @@ async def status_sorted(page: int = 1,
     characters = sorted(characters, key=lambda x: x["status"])
     if not verbose:
         characters = [{"name": character["name"], "status": character["status"]} for character in characters]
-    return paginate(characters, page)
+    return paginate_list(characters, page)
 
 
 @router.get("/species-sorted")
@@ -74,7 +74,7 @@ async def species_sorted(page: int = 1,
     characters = sorted(characters, key=lambda x: x["species"])
     if not verbose:
         characters = [{"name": character["name"], "species": character["species"]} for character in characters]
-    return paginate(characters, page)
+    return paginate_list(characters, page)
 
 
 @router.get("/most-common-species")

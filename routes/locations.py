@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from utils import paginate
+from utils import paginate_list
 import data.cache as cache
 
 router = APIRouter()
@@ -24,7 +24,7 @@ async def filter_locations(name: str = None,
         locations = [location for location in locations if location["dimension"].lower().find(dimension) != -1]
     if at_least_residents:
         locations = [location for location in locations if len(location["residents"]) >= at_least_residents]
-    return paginate(locations, page)
+    return paginate_list(locations, page)
 
 
 @router.get("/residents-sorted")
@@ -37,7 +37,7 @@ async def residents_sorted(page: int = 1,
     locations = sorted(locations, key=lambda x: len(x["residents"]), reverse=True)
     if not verbose:
         locations = [{"name": location["name"], "resident_count": len(location["residents"])} for location in locations]
-    return paginate(locations, page)
+    return paginate_list(locations, page)
 
 
 @router.get("/type-sorted")
@@ -50,7 +50,7 @@ async def type_sorted(page: int = 1,
     locations = sorted(locations, key=lambda x: x["type"], reverse=True)
     if not verbose:
         locations = [{"name": location["name"], "type": location["type"]} for location in locations]
-    return paginate(locations, page)
+    return paginate_list(locations, page)
 
 
 @router.get("/most-common-dimension")
