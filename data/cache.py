@@ -59,9 +59,9 @@ def cache_data():
         ("Characters", get_all_characters)
     ]
 
-    with tqdm(total=len(cache_functions), desc="Caching data") as pbar:
+    with tqdm(total=len(cache_functions), desc="Caching Data") as pbar:
         for name, func in cache_functions:
             pbar.set_description(f"Caching {name}")
             func()
             pbar.update(1)
-        pbar.set_description("Caching complete")
+        pbar.set_description("Caching Complete")

@@ -1,13 +1,13 @@
 import data.cache as cache
-from sklearn.cluster import KMeans
+import utils.data_analysis as data_analysis
 import numpy as np
 
 
 def characters_relationships(n_clusters: int = 10):
     """
     Estimate relationships between characters according to their appearances in the whole series.
-    :param n_clusters:  Number of clusters to group characters
-    :return:  Dictionary where keys are cluster IDs and values are lists of character IDs
+    :param n_clusters: Number of clusters to group characters
+    :return: Dictionary where keys are cluster IDs and values are lists of character IDs
     """
     characters = cache.get_all_characters()
     episodes = cache.get_all_episodes()
@@ -17,33 +17,20 @@ def characters_relationships(n_clusters: int = 10):
     matrix = np.array([[1 if str(character["id"]) in [character.split("/")[-1] for character in episode["characters"]]
                         else 0 for episode in episodes] for character in characters])
 
-    # Apply KMeans clustering to group characters
-    kmeans = KMeans(n_clusters=n_clusters)  # 10 levels of relationships
-    kmeans.fit(matrix)
-    clusters = kmeans.predict(matrix)
+    clusters = data_analysis.apply_kmeans(matrix, n_clusters)
 
     # Create a list of character Name and their corresponding clusters
     character_clusters = [(character["name"], cluster_id) for character, cluster_id in zip(characters, clusters)]
 
-    # Sort characters based on their clusters
-    sorted_characters = sorted(character_clusters, key=lambda x: x[1])
-
-    # Group characters by cluster
-    character_relationships_groups = {}
-    for character_id, cluster_id in sorted_characters:
-        if cluster_id not in character_relationships_groups:
-            character_relationships_groups[cluster_id] = []
-        character_relationships_groups[cluster_id].append(character_id)
-
-    return character_relationships_groups
+    return data_analysis.sort_and_group_clusters(character_clusters)
 
 
 def dimension_species_diversity(n_clusters: int = 5):
     """
     List dimensions and the number of species that appear in each one.
     Are there dimensions with higher species diversity?
-    :param n_clusters:  Number of diversity levels
-    :return:  List of dimensions and their species diversity
+    :param n_clusters: Number of diversity levels
+    :return: List of dimensions and their species diversity
     """
     characters = cache.get_all_characters()
     species = list(set([character["species"] for character in characters]))
@@ -64,23 +51,13 @@ def dimension_species_diversity(n_clusters: int = 5):
                 species_idx = species.index(character["species"])
                 matrix[dimension_idx, species_idx] = 1
 
-    # Apply KMeans clustering to group dimensions
-    kmeans = KMeans(n_clusters=n_clusters)
-    kmeans.fit(matrix)
-    clusters = kmeans.predict(matrix)
+    clusters = data_analysis.apply_kmeans(matrix, n_clusters)
 
     # Create a list of dimension Name and their corresponding clusters
     dimension_clusters = [(dimension, cluster_id) for dimension, cluster_id in zip(dimensions, clusters)]
 
-    # Sort dimensions based on their clusters
-    sorted_dimensions = sorted(dimension_clusters, key=lambda x: x[1])
-
-    # Group dimensions by cluster
-    dimension_species_diversity_groups = {}
-    for dimension, cluster_id in sorted_dimensions:
-        if cluster_id not in dimension_species_diversity_groups:
-            dimension_species_diversity_groups[cluster_id] = []
-        dimension_species_diversity_groups[cluster_id].append(dimension)
+    # Group dimensions based on the species diversity in each cluster
+    dimension_species_diversity_groups = data_analysis.sort_and_group_clusters(dimension_clusters)
 
     # Sort clusters based on the average amount of species in each cluster
     clusters_avg_species_count = {}
@@ -101,7 +78,7 @@ def dangerous_locations(danger_threshold: float = 0.75):
     """
     characters = cache.get_all_characters()
     locations = cache.get_all_locations()
-    statuses = list(set([character["status"] for character in characters]))
+    statuses = data_analysis.get_uniques(characters, "status")
 
     # Create a matrix where each row is a location and each column is a status
     # The value is the number of characters with that status in that location
@@ -130,20 +107,9 @@ def species_survival():
     Analyze the correlation between a character's species and their status.
     :return: List of species and their survival rates
     """
-    species_counts, status_counts = {}, {}
     characters = cache.get_all_characters()
-
-    for character in characters:
-        species = character["species"]
-        status = character["status"]
-
-        if species not in species_counts:
-            species_counts[species] = 0
-        species_counts[species] += 1
-
-        if status not in status_counts:
-            status_counts[status] = 0
-        status_counts[status] += 1
+    species_counts = data_analysis.counts_dict(characters, "species")
+    status_counts = data_analysis.counts_dict(characters, "status")
 
     # Create a matrix where each row is a species and each column is a status
     # The value is the number of characters with that status in that species
@@ -170,8 +136,8 @@ def gender_by_location_type():
     """
     characters = cache.get_all_characters()
     locations = cache.get_all_locations()
-    genders = list(set([character["gender"] for character in characters]))
-    location_types = list(set([location["type"] for location in locations]))
+    genders = data_analysis.get_uniques(characters, "gender")
+    location_types = data_analysis.get_uniques(locations, "type")
     location_types = [location_type for location_type in location_types if location_type != ""]
 
     # Create a matrix where each row is a location type and each column is a gender
@@ -203,7 +169,7 @@ def native_species():
     """
     characters = cache.get_all_characters()
     locations = cache.get_all_locations()
-    species = list(set([character["species"] for character in characters]))
+    species = data_analysis.get_uniques(characters, "species")
 
     # Create a matrix where each row is a location and each column is a species
     # The value is the number of characters of that species in that location
