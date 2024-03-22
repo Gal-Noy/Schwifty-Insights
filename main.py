@@ -1,7 +1,8 @@
-import uvicorn
-from fastapi import FastAPI
 import config
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+import uvicorn
+
 from data import cache
 from routes import characters, episodes, locations, insights, auth
 
