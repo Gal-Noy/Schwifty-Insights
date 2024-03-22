@@ -39,13 +39,17 @@ async def estimate_relationships(page: int = 1):
     return utils.paginate_list_of_tuples(relationships_labeled, page)
 
 
-@router.get("/species-status-correlation")
-async def species_status_correlation():
+@router.get("/species-survival")
+async def species_survival():
     """
-    Analyze the correlation between a character's species and their status (dead/alive/unknown).
-    Are there species with higher mortality rates?
+    Analyze the correlation between a character's species and their status.
+    Are there species that are more likely to survive?
+    :return: List of species and their survival rates
     """
-    return {"message": "Species and status correlation"}
+    species_survival_rates = analysis.species_survival()
+    sorted_by_survival_rate = sorted(species_survival_rates.items(), key=lambda x: x[1], reverse=True)
+    return [{"species": species, "survival_rate": f"{round(survival_rate * 100, 2)}%"}
+            for species, survival_rate in sorted_by_survival_rate]
 
 
 @router.get("/species-location-correlation")

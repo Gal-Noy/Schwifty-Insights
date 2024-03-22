@@ -39,3 +39,33 @@ def estimate_relationships(n_clusters: int = 10):
 
     return character_relationships_groups
 
+
+def species_survival():
+    species_counts, status_counts = {}, {}
+    characters = cache.get_all_characters()
+
+    for character in characters:
+        species = character["species"]
+        status = character["status"]
+
+        if species not in species_counts:
+            species_counts[species] = 0
+        species_counts[species] += 1
+
+        if status not in status_counts:
+            status_counts[status] = 0
+        status_counts[status] += 1
+
+    matrix = np.zeros((len(species_counts), len(status_counts)))
+    for i, (species, species_count) in enumerate(species_counts.items()):
+        for j, (status, status_count) in enumerate(status_counts.items()):
+            matrix[i, j] = len([character for character in characters
+                                if character["species"] == species and character["status"] == status])
+
+    species_survival_rates = {}
+    for i, species in enumerate(species_counts.keys()):
+        survival_rate = matrix[i, 0] / np.sum(matrix[i])
+        species_survival_rates[species] = survival_rate
+
+    return {f"{species} ({species_counts[species]})": survival_rate
+            for species, survival_rate in species_survival_rates.items()}
