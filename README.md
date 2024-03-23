@@ -37,15 +37,14 @@ This Python application delves into the Rick and Morty universe, leveraging the 
 ### Analyzing Character Relationships
 Utilize the ```/insights/characters-relationships``` endpoint to uncover clusters of characters based on their appearances throughout the series. Explore how characters are grouped together and discover potential relationships and interactions.
 
-![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/abeeb201-29a6-46be-80d3-66fa66945b89)
+![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/f68b7bf7-068d-4d1d-8132-f62529c90522)
 
 ### Exploring Dimension Species Diversity
 Dive into the ```/insights/dimension-species-diversity``` endpoint to understand species diversity across different dimensions. Investigate which dimensions exhibit higher species variety and uncover potential correlations between dimensions and species distribution.
 
-![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/e24ebdbd-9451-4ca9-8677-f58ab3182b94)
+![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/310f1e76-50b4-4484-8035-2751b49d2976)
 
-### Identifying Dangerous Locations
-Use the ```/insights/dangerous-locations``` endpoint to identify locations with higher mortality rates among characters. Explore the correlation between character statuses (Alive, Dead, Unknown) and their respective locations, providing insights into the dangers characters face in different settings.
+### Identifying Species Survival Rates
+Use the ```/insights/species-survival``` endpoint to analyze species with higher/lower mortality rates among characters. Explore the correlation between character statuses (Alive, Dead, Unknown) and their respective species.
 
-![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/bc9ea6bb-12e5-43c7-964a-24a75091bb9c)
-
+![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/28ae0b8b-ed98-4c99-b335-e3022a87477e)
