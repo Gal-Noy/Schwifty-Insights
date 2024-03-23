@@ -86,8 +86,8 @@ async def dangerous_locations(token: Annotated[str, Depends(oauth2_scheme)],
     """
     danger_threshold = 0.75  # 75% of characters in a location are dead or unknown
     result = analysis.dangerous_locations(danger_threshold)
-    sorted_by_danger = sorted(result, key=lambda x: x[1], reverse=True)
-    return pagination.paginate_list([(label, f"Mortality Rate: {_ * 100}%") for label, _ in sorted_by_danger], page)
+    sorted_by_danger = sorted(result, key=lambda x: x[1])
+    return pagination.paginate_list([(label, f"Mortality Rate: {round(_ * 100, 2)}%") for label, _ in sorted_by_danger], page)
 
 
 @router.get("/species-survival")
