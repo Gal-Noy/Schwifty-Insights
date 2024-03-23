@@ -18,15 +18,16 @@ This Python application delves into the Rick and Morty universe, leveraging the 
    ```
    uvicorn main:app --reload
    ```
-9. Access the API at http://localhost:8000 in your web browser or API client.
-10. Refer to the API documentation for available endpoints and usage details.
+9. Access the API at http://localhost:8000 in your web browser or API client, or visit Swagger documentation at at http://localhost:8000/docs.
+10. Authenticate via `/auth/` endpoints (or using Swagger interface).
+11. Refer to the API documentation for available endpoints and usage details.
 
 ## Features
 - **Explore Insights** - Provides the ability to analyze data retrieved from the Rick and Morty API. Users can discover trends, relationships, and other interesting details about characters, episodes, and locations
 - **Data Analysis** - The application performs in-depth analysis on the retrieved data leveraging AI algorhitms such as clustering. This analysis uncovers patterns and trends like relationships, species diversity, and dangerous locations based on character status.
 - **Authentication** - API access is retricted by token authentication implemented with JWT, users must authenticate themselves before interacting with the data.
 - **Caching** - Optimized performance by caching mechanism to store API responses, reducing the number of requests to the Rick and Morty API.
-- **API Documentation** - Provide documentation using Swagger (at http://localhost:8000/docs), detailing all available endpoints, request parameters, and response formats.
+- **API Documentation** - The application provides documentation using Swagger, detailing all available endpoints, request parameters, and response formats.
 - **Unit Tests** - The application includes unit tests that verify the correctness of the data analysis logic and API functionality. This ensures the reliability of the insights provided by the application.
 - **Pagination** - Allows users to retrieve large datasets in smaller chunks. Users can set defalut page size in config.py.
 - **Rate Limits** - Manages API requests to prevent overwhelming the Rick and Morty API and ensure fair usage. Can also be configured in config.py.
