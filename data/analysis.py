@@ -190,6 +190,27 @@ def native_species():
     return native_species_list
 
 
+def interdimensional_travelers():
+    """
+    Report characters who travel between dimensions.
+    :return: List of characters who travel between dimensions
+    """
+    characters = cache.get_all_characters()
+    locations = cache.get_all_locations()
+    interdimensional_travelers_list = []
+    for character in characters:
+        c_location = character["location"]["url"].split("/")[-1]
+        c_origin = character["origin"]["url"].split("/")[-1]
+        if c_location != "" and c_origin != "":
+            location_idx = [location["id"] for location in locations].index(int(c_location))
+            origin_idx = [location["id"] for location in locations].index(int(c_origin))
+            l_dimension = locations[location_idx]["dimension"]
+            o_dimension = locations[origin_idx]["dimension"]
+            if l_dimension != o_dimension and l_dimension != "unknown" and o_dimension != "unknown":
+                interdimensional_travelers_list.append((character["name"], [o_dimension, l_dimension]))
+    return interdimensional_travelers_list
+
+
 def frequent_travelers():
     """
     Report characters which change locations frequently.
@@ -197,3 +218,27 @@ def frequent_travelers():
     """
     return [character["name"] for character in cache.get_all_characters()
             if character["location"]["name"] != character["origin"]["name"]]
+
+
+def main_characters(threshold: float = 0.5):
+    """
+    Report the main characters of the series.
+    :param threshold: Threshold for main characters
+    :return: List of main characters
+    """
+    characters = cache.get_all_characters()
+    episodes = cache.get_all_episodes()
+
+    # Create a matrix where each row is a character and each column is an episode
+    # The value is 1 if the character appears in the episode, 0 otherwise
+    matrix = np.array([[1 if str(character["id"]) in [character.split("/")[-1] for character in episode["characters"]]
+                        else 0 for episode in episodes] for character in characters])
+
+    # Calculate the number of episodes each character appears in
+    appearances = np.sum(matrix, axis=1)
+
+    # Find the main characters
+    main_characters_list = [character["name"] for character, appearance in zip(characters, appearances)
+                            if appearance / len(episodes) >= threshold]
+
+    return main_characters_list

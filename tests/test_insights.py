@@ -41,7 +41,16 @@ def test_gender_by_location_type():
     assert response.status_code == 200
 
 
+def test_interdimensional_travelers():
+    response = client.get("/insights/interdimensional-travelers", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
+    assert response.status_code == 200
+
+
 def test_frequent_travelers():
     response = client.get("/insights/frequent-travelers", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
     assert response.status_code == 200
 
+
+def test_main_characters():
+    response = client.get("/insights/main-characters", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
+    assert response.status_code == 200

@@ -135,6 +135,21 @@ async def gender_by_location_type(token: Annotated[str, Depends(oauth2_scheme)],
     return pagination.paginate_list(result, page)
 
 
+@router.get("/interdimensional-travelers")
+async def interdimensional_travelers(token: Annotated[str, Depends(oauth2_scheme)],
+                                     page: int = 1):
+    """
+    Report characters who travel between dimensions.
+    :param page:
+    :param token:
+    :return: List of characters who travel between dimensions
+    """
+    interdimensional_travelers_list = analysis.interdimensional_travelers()
+    labeled_list = [(character, f"Dimensions: {', '.join(dimensions)}")
+                    for character, dimensions in interdimensional_travelers_list]
+    return pagination.paginate_list(labeled_list, page)
+
+
 @router.get("/frequent-travelers")
 async def frequent_travelers(token: Annotated[str, Depends(oauth2_scheme)],
                              page: int = 1):
@@ -145,3 +160,16 @@ async def frequent_travelers(token: Annotated[str, Depends(oauth2_scheme)],
     :return: List of characters who change locations frequently
     """
     return pagination.paginate_list(analysis.frequent_travelers(), page)
+
+
+@router.get("/main-characters")
+async def main_characters(token: Annotated[str, Depends(oauth2_scheme)],
+                          page: int = 1):
+    """
+        Report the main characters of the series.
+        :param page:
+        :param token:
+        :return: List of main characters
+        """
+    threshold = 0.5
+    return pagination.paginate_list(analysis.main_characters(threshold), page)

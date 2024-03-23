@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from utils.auth import oauth2_scheme
@@ -70,3 +71,16 @@ async def air_date_sorted(token: Annotated[str, Depends(oauth2_scheme)],
     if not verbose:
         episodes = [{"name": episode["name"], "air_date": episode["air_date"]} for episode in episodes]
     return paginate_list(episodes, page)
+
+
+@router.get("/last-episode")
+async def last_episode(token: Annotated[str, Depends(oauth2_scheme)]):
+    """
+    Last episode
+    :param token:
+    :return: Last episode
+    """
+    episodes = cache.get_all_episodes()
+    episodes_names_air_dates = [(episode["episode"], episode["name"], episode["air_date"]) for episode in episodes]
+    last_episode_tuple = max(episodes_names_air_dates, key=lambda x: datetime.strptime(x[2], "%B %d, %Y"))
+    return {"episode": last_episode_tuple[0], "name": last_episode_tuple[1], "air_date": last_episode_tuple[2]}
