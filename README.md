@@ -44,7 +44,12 @@ Dive into the ```/insights/dimension-species-diversity``` endpoint to understand
 
 ![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/310f1e76-50b4-4484-8035-2751b49d2976)
 
-### Identifying Species Survival Rates
-Use the ```/insights/species-survival``` endpoint to analyze species with higher/lower mortality rates among characters. Explore the correlation between character statuses (Alive, Dead, Unknown) and their respective species.
+### Identifying Dangerous Locations
+Use the ```/insights/dangerous-locations``` endpoint to identify locations with higher mortality rates among characters. Explore the correlation between character statuses (Alive, Dead, Unknown) and their respective locations, providing insights into the dangers characters face in different settings.
+
+![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/b5a24f8b-9eec-4159-832f-d884df7293d2)
+
+### Reporting Species Survival Rates
+Use the ```/insights/species-survival``` endpoint to analyze species with higher survival rates.
 
 ![image](https://github.com/Gal-Noy/Schwifty-Insights/assets/109943831/28ae0b8b-ed98-4c99-b335-e3022a87477e)
