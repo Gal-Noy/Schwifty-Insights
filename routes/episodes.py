@@ -73,10 +73,24 @@ async def air_date_sorted(token: Annotated[str, Depends(oauth2_scheme)],
     return paginate_list(episodes, page)
 
 
+@router.get("/most-characters")
+async def most_characters(token: Annotated[str, Depends(oauth2_scheme)]):
+    """
+    Most characters in an episode
+    :param token:
+    :return: Episode with most characters
+    """
+    episodes = cache.get_all_episodes()
+    episodes_names_air_dates = [(episode["episode"], episode["name"], len(episode["characters"])) for episode in episodes]
+    most_characters_episode_tuple = max(episodes_names_air_dates, key=lambda x: x[2])
+    return {"episode": most_characters_episode_tuple[0], "name": most_characters_episode_tuple[1],
+            "character_count": most_characters_episode_tuple[2]}
+
+
 @router.get("/last-episode")
 async def last_episode(token: Annotated[str, Depends(oauth2_scheme)]):
     """
-    Last episode
+    Last episode by air date
     :param token:
     :return: Last episode
     """

@@ -56,10 +56,20 @@ def test_air_date_sorted():
     assert response.json()["data"][0]["air_date"] == "March 10, 2014"
 
 
+def test_most_characters():
+    response = client.get("/episodes/most-characters", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
+    assert response.status_code == 200
+    assert len(response.json()) == 3
+    assert response.json()["episode"] == "S03E07"
+    assert response.json()["name"] == "The Ricklantis Mixup"
+    assert response.json()["character_count"] == 65
+
+
+
 def test_last_episode():
     response = client.get("/episodes/last-episode", headers={"Authorization": f"Bearer {BEARER_TOKEN}"})
     assert response.status_code == 200
-    assert len(response.json()) == 1
+    assert len(response.json()) == 3
     assert response.json()["episode"] == "S05E09"
     assert response.json()["name"] == "Forgetting Sarick Mortshall"
     assert response.json()["air_date"] == "September 5, 2021"
