@@ -9,19 +9,18 @@ router = APIRouter()
 
 
 @router.post('/register')
-def register(username: str, password: str):
+def register(user_in: users.User):
     """
     Register endpoint
-    :param username:
-    :param password:
+    :param user_in: User data {username, password}
     :return: Message
     """
-    hashed_password = u_auth.pwd_context.hash(password)
-    user = users.User(username=username, password=hashed_password)
-    if not users.add_user(user):
+    hashed_password = u_auth.pwd_context.hash(user_in.password)
+    user_in.password = hashed_password
+    if not users.add_user(user_in):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="User already exists")
-    return {"message": "User created successfully"}
+                            detail=f"User {user_in.username} already exists")
+    return {"message": f"User {user_in.username} created successfully"}
 
 
 @router.post('/token')
