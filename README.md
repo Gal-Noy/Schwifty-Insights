@@ -1,5 +1,5 @@
 # Schwifty-Insights
-This Python application delves into the Rick and Morty universe, leveraging the Rick and Morty API to analyze data about characters, episodes, and locations. It uncovers intriguing insights and relationships, exposing them through a well-designed RESTful API built with FastAPI.
+This Python application delves into the Rick and Morty universe, leveraging the Rick and Morty API to analyze data about characters, episodes, and locations. It uncovers intriguing insights and relationships using data analysis and AI algorithms like K-means clustering. The results are then exposed through a well-designed RESTful API built with FastAPI.
 
 ## Installation
 1. Clone the repository:
@@ -18,8 +18,8 @@ This Python application delves into the Rick and Morty universe, leveraging the 
    ```
    uvicorn main:app --reload
    ```
-9. Access the API at http://localhost:8000 in your web browser or API client, or visit Swagger documentation at at http://localhost:8000/docs.
-10. Authenticate via `/auth/` endpoints (or using Swagger interface).
+9. Access the API at http://localhost:8000 in your web browser or API client, or visit Swagger documentation at http://localhost:8000/docs.
+10. Authenticate through `/auth/` endpoints (or using Swagger interface).
 11. Refer to the API documentation for available endpoints and usage details.
 
 ## Features
